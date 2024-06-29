@@ -1,18 +1,52 @@
+import React, { useState, useContext } from 'react';
 import axios from 'axios';
+import { ReactContext } from '../../ReactContext/ReactContext';
 
-const url = 'https://api.openbrewerydb.org/breweries';
+const Search = () => {
+  const { setData } = useContext(ReactContext);
+  const [city, setCity] = useState('');
+  const [name, setName] = useState('');
+  const [type, setType] = useState('');
 
-export const searchByCity = async (city) => {
-  const response = await axios.get(`${url}?by_city=${city}`);
-  return response.data;
+  const handleSearch = async () => {
+    try {
+      const response = await axios.get(`https://api.openbrewerydb.org/v1/breweries`, {
+        params: {
+          by_city: city,
+          by_name: name,
+          by_type: type
+        }
+      });
+      setData(response.data);
+    } catch (error) {
+      console.error('Error fetching breweries:', error);
+    }
+  };
+
+  return (
+    <div>
+      <h2>Search Breweries</h2>
+      <input
+        type="text"
+        placeholder="City"
+        value={city}
+        onChange={(e) => setCity(e.target.value)}
+      />
+      <input
+        type="text"
+        placeholder="Name"
+        value={name}
+        onChange={(e) => setName(e.target.value)}
+      />
+      <input
+        type="text"
+        placeholder="Type"
+        value={type}
+        onChange={(e) => setType(e.target.value)}
+      />
+      <button onClick={handleSearch}>Search</button>
+    </div>
+  );
 };
 
-export const searchByName = async (name) => {
-  const response = await axios.get(`${url}?by_name=${name}`);
-  return response.data;
-};
-
-export const searchByType = async (type) => {
-  const response = await axios.get(`${url}?by_type=${type}`);
-  return response.data;
-};
+export default Search;

@@ -1,40 +1,25 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext } from 'react';
+import { Link } from 'react-router-dom';
 import { ReactContext } from '../../ReactContext/ReactContext';
 
 const BreweryList = () => {
-  const { data, fetchData } = useContext(ReactContext);
-  const [searchType, setSearchType] = useState('city');
-  const [searchTerm, setSearchTerm] = useState('');
-
-  const handleSearch = () => {
-    fetchData(searchTerm, searchType);
-  };
+  const { getData } = useContext(ReactContext);
 
   return (
     <div>
-      <h2>Search Breweries</h2>
-      <div>
-        <select onChange={(e) => setSearchType(e.target.value)} value={searchType}>
-          <option value="city">City</option>
-          <option value="name">Name</option>
-          <option value="type">Type</option>
-        </select>
-        <input
-          type="text"
-          placeholder={`Search by ${searchType}`}
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-        />
-        <button onClick={handleSearch}>Search</button>
-      </div>
-      <div>
-        <h3>Results:</h3>
-        <ul>
-          {data.map((brewery) => (
-            <li key={brewery.id}>{brewery.name}</li>
-          ))}
-        </ul>
-      </div>
+      <h2>Brewery List</h2>
+      <ul>
+        {getData.map((brewery) => (
+          <li key={brewery.id}>
+            <h3>{brewery.name}</h3>
+            <p>{brewery.address_1}</p>
+            <p>{brewery.phone}</p>
+            <a href={brewery.website_url} target="_blank" rel="noopener noreferrer">Visit Website</a>
+            <p>Rating: {brewery.rating || 'No ratings yet'}</p>
+            <Link to={`/brewery/${brewery.id}`}>View Details</Link>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 };
