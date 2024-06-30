@@ -1,6 +1,6 @@
 import React from 'react'
 import Cookies from "js-cookie"
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import "./Header.css"
 import { toast } from 'react-toastify'
 
@@ -14,7 +14,9 @@ const Header = () => {
   }
   return (
     <div className='header-container'>
-      <h1>Brewery App</h1>
+      <Link to="/" className='nav-link'>
+        <h1>Brewery App</h1>
+      </Link>
       <button onClick={onClickLogout}>Logout</button>
     </div>
   )
