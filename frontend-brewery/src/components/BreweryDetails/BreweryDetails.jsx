@@ -44,7 +44,7 @@ const BreweryDetails = () => {
   const onSubmitReviews = async (event) => {
     event.preventDefault();
     try {
-      const response = await axios.post(`http://localhost:3001/review`, formData, {
+      const response = await axios.post(`${url}/review`, formData, {
         headers: {
           Authorization: `Bearer ${token}`
         }

@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext } from 'react';
 import { ReactContext } from '../../ReactContext/ReactContext';
 import "./SearchPage.css"
 import { Link } from 'react-router-dom';

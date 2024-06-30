@@ -30,7 +30,7 @@ const Login = () => {
   const onSubmitDetails = async (e) => {
     e.preventDefault();
 
-    await axios.post(`http://localhost:3001/user/login`, details)
+    await axios.post(`${url}/user/login`, details)
       .then((response) => {
         if (response.status === 200) {
           console.log(response)

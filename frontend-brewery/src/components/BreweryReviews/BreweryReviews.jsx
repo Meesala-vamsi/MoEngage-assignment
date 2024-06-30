@@ -6,12 +6,12 @@ import axios from 'axios'
 
 const BreweryReviews = () => {
   const [reviews, setReviews] = useState([])
-  const { userData, url, token } = useContext(ReactContext)
+  const { url, token } = useContext(ReactContext)
 
 
   useEffect(() => {
     const getData = async () => {
-      await axios.get(`http://localhost:3001/review`, {
+      await axios.get(`${url}/review`, {
         headers: {
           Authorization: `Bearer ${token}`
         }
@@ -24,7 +24,7 @@ const BreweryReviews = () => {
     }
 
     getData()
-  }, [token, reviews])
+  })
 
   return (
     <div className='reviews-container'>

@@ -41,18 +41,18 @@ exports.createUser = asyncErrorController(async (req, res, next) => {
   if (user) {
     const error = new ErrorFeature("User Already Exists", 200)
     next(error)
-  } else {
-    const users = await User.create(req.body)
-    const token = getToken({ id: users._id })
-
-
-    res.cookie('jwtToken', token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'Strict',
-      maxAge: 30 * 24 * 60 * 60 * 1000
-    });
   }
+  const users = await User.create(req.body)
+  const token = jwt.sign({ id: users._id }, "vamsi")
+
+
+  res.cookie('jwtToken', token, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'Strict',
+    maxAge: 30 * 24 * 60 * 60 * 1000
+  });
+
 
   res.status(201).json({
     status: "success",

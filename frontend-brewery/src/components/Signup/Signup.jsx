@@ -1,6 +1,6 @@
 import axios from "axios"
 import "./Signup.css"
-import { useContext, useEffect, useState } from "react"
+import { useContext, useState } from "react"
 import { ReactContext } from "../../ReactContext/ReactContext"
 import { useNavigate } from "react-router-dom"
 import { toast } from "react-toastify"
@@ -11,6 +11,8 @@ const Signup = () => {
     email: "",
     password: ""
   })
+
+  const { url } = useContext(ReactContext)
   const navigate = useNavigate()
 
   const onChangeInput = (e) => {
@@ -29,7 +31,7 @@ const Signup = () => {
   const onSubmitDetails = async (e) => {
     e.preventDefault()
 
-    await axios.post(`http://localhost:3001/user/signup`, details)
+    await axios.post(`${url}/user/signup`, details)
       .then(response => {
         if (response.data.status === 200 || 201) {
           navigate("/login")
