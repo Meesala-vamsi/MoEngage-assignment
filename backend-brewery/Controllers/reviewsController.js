@@ -18,8 +18,7 @@ exports.createReview = asyncErrorController(async (req, res, next) => {
 })
 
 exports.getAllReviews = asyncErrorController(async (req, res, next) => {
-  const reviews = await Reviews.find({ userId: req.params.id })
-  console.log(req.params.id)
+  const reviews = await Reviews.find()
   res.status(200).json({
     status: "Success",
     count: reviews.length,

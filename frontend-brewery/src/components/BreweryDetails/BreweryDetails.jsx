@@ -1,82 +1,131 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import React, { useContext, useEffect, useState } from 'react';
+import { ReactContext } from '../../ReactContext/ReactContext';
+import { FaStar } from "react-icons/fa";
 import { useParams } from 'react-router-dom';
+import axios from 'axios';
+import Header from '../Header/Header';
+import "./BreweryDetails.css";
+import BreweryReviews from '../BreweryReviews/BreweryReviews';
+import { toast } from 'react-toastify';
 
-const BreweryDetail = () => {
+const BreweryDetails = () => {
+  const [breweryItem, setBreweryItem] = useState({});
+  const [starHover, setStarHover] = useState(null);
+  const { url, token } = useContext(ReactContext);
+  const [formData, setFormData] = useState({
+    rating: 1,
+    description: ""
+  });
   const { id } = useParams();
-  const [brewery, setBrewery] = useState(null);
-  const [reviews, setReviews] = useState([]);
-  const [newReview, setNewReview] = useState({ rating: '', description: '' });
 
   useEffect(() => {
-    const fetchBrewery = async () => {
-      const response = await axios.get(`https://api.openbrewerydb.org/v1/breweries/${id}`);
-      setBrewery(response.data);
-    };
+    const getBreweryDetails = async () => {
+      const url = `https://api.openbrewerydb.org/v1/breweries/${id}`;
+      await axios.get(url)
+        .then((response) => {
+          setBreweryItem(response.data);
+        })
+        .catch((error) => {
+          console.error("Error fetching brewery details: ", error);
+        });
+    }
 
-    const fetchReviews = async () => {
-      const response = await axios.get(`https://moengage-assignment-2.onrender.com/reviews/${id}`);
-      setReviews(response.data);
-    };
-
-    fetchBrewery();
-    fetchReviews();
+    getBreweryDetails();
   }, [id]);
 
-  const handleReviewSubmit = async (e) => {
-    e.preventDefault();
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      [name]: value
+    });
+  };
+
+  const onSubmitReviews = async (event) => {
+    event.preventDefault();
     try {
-      const response = await axios.post('https://moengage-assignment-2.onrender.com/reviews', {
-        breweryId: id,
-        ...newReview
+      const response = await axios.post(`http://localhost:3001/review`, formData, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
       });
-      setReviews([...reviews, response.data]);
-      setNewReview({ rating: '', description: '' });
+      if (response.status === 201) {
+        toast.success(response.data.message)
+        setFormData({
+          rating: 1,
+          description: ""
+        })
+      }
     } catch (error) {
-      console.error('Error submitting review:', error);
+      console.error('Error adding review:', error);
     }
   };
 
-  if (!brewery) return <div>Loading...</div>;
-
   return (
-    <div>
-      <h2>{brewery.name}</h2>
-      <p>{brewery.address_1}</p>
-      <p>{brewery.phone}</p>
-      <a href={brewery.website_url} target="_blank" rel="noopener noreferrer">Visit Website</a>
-      <h3>Reviews</h3>
-      <ul>
-        {reviews.map((review, index) => (
-          <li key={index}>
-            <p>Rating: {review.rating}</p>
-            <p>{review.description}</p>
-          </li>
-        ))}
-      </ul>
-      <form onSubmit={handleReviewSubmit}>
-        <h4>Add a Review</h4>
-        <label>
-          Rating:
-          <input
-            type="number"
-            value={newReview.rating}
-            onChange={(e) => setNewReview({ ...newReview, rating: e.target.value })}
-            required
-          />
-        </label>
-        <label>
-          Description:
-          <textarea
-            value={newReview.description}
-            onChange={(e) => setNewReview({ ...newReview, description: e.target.value })}
-            required
-          />
-        </label>
-        <button type="submit">Submit Review</button>
-      </form>
-    </div>
-  );
-};
+    <>
+      <Header />
 
-export default BreweryDetail;
+      <div className='brewery-details-container'>
+
+        <div className='brewery-sub-container'>
+          <div >
+            <h1 className='brewery-main-heading'>Brewery Details</h1>
+            <p><span>Name: </span>{breweryItem.name}</p>
+            <p><span>Address: </span>{breweryItem.address_1}</p>
+            <p><span>City: </span>{breweryItem.city}</p>
+            <p><span>Country: </span>{breweryItem.country}</p>
+            <p><span>Phone: </span>{breweryItem.phone}</p>
+            <p><span>State: </span>{breweryItem.state}</p>
+          </div>
+          <form className='details-form-container' onSubmit={onSubmitReviews} >
+            <div className='rating-details-container'>
+              <label>Ratings:</label>
+              <div>
+                {
+                  [...Array(5)].map((_, index) => {
+                    const currentRating = index + 1;
+                    return (
+                      <label key={index}>
+                        <input
+                          type="radio"
+                          name="rating"
+                          value={currentRating}
+                          onClick={() => setFormData({ ...formData, rating: currentRating })}
+                        />
+                        <FaStar
+                          size={20}
+                          className='star'
+                          color={currentRating <= (starHover || formData.rating) ? "#ffc107" : "lightgray"}
+                          onMouseEnter={() => setStarHover(currentRating)}
+                          onMouseLeave={() => setStarHover(null)}
+                        />
+                      </label>
+                    );
+                  })
+                }
+              </div>
+            </div>
+            <div className='brewery-description-container'>
+              <label htmlFor="review">Enter Your Review</label>
+              <textarea
+                id="review"
+                name="description"
+                cols={40}
+                rows={10}
+                placeholder='Enter Your Review....'
+                value={formData.description}
+                onChange={handleChange}
+              ></textarea>
+            </div>
+            <div className='submit-container'>
+              <button type='submit'>Submit</button>
+            </div>
+          </form>
+        </div>
+        <BreweryReviews />
+      </div>
+    </>
+  );
+}
+
+export default BreweryDetails;

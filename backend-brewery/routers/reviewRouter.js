@@ -6,9 +6,8 @@ const reviewRouter = express.Router()
 
 reviewRouter.route("/")
   .post(UserController.contentPermission, reviewController.createReview)
-
-reviewRouter.route("/:id")
   .get(UserController.contentPermission, reviewController.getAllReviews)
+
 
 
 

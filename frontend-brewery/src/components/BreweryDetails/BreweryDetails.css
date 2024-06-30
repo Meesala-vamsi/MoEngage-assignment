@@ -1,0 +1,92 @@
+input[type=radio] {
+  display: none;
+}
+
+.star {
+  cursor: pointer;
+}
+
+.brewery-details-container {
+  padding: 16px 30px;
+}
+
+.brewery-details-container span {
+  font-weight: bold;
+}
+
+.brewery-sub-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.brewery-sub-container .details-form-container {
+  width: 50%;
+  padding: 10px 20px;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 30px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+}
+
+.details-form-container .rating-details-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.details-form-container .brewery-description-container {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.brewery-details-container label {
+  font-weight: bold;
+}
+
+
+
+.username-container input {
+  padding: 7px;
+  border-radius: 4px;
+  border: 1px solid #000;
+  width: 50%;
+}
+
+.brewery-description-container textarea {
+  padding: 7px;
+}
+
+.submit-container {
+  display: flex;
+  justify-content: center;
+}
+
+.submit-container button {
+  padding: 7px 10px;
+  font-size: 17px;
+  border-radius: 6px;
+  background-color: #fff;
+  border: 1px solid #000;
+  cursor: pointer;
+}
+
+@media screen and (max-width:768px) {
+  .brewery-sub-container {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+
+
+  .brewery-sub-container .details-form-container {
+    width: 100%;
+  }
+
+  .brewery-sub-container .brewery-main-heading {
+    font-size: 19px;
+  }
+}

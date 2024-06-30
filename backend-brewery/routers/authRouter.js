@@ -7,6 +7,8 @@ router.route('/signup')
 
 router.route('/login')
   .post(UserController.loginUser)
+router.route("/profile")
+  .get(UserController.contentPermission, UserController.getUser)
 
 
 

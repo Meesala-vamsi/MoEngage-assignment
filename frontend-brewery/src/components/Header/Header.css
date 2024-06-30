@@ -1,0 +1,21 @@
+.header-container {
+  display: flex;
+  justify-content: space-between;
+  padding: 5px 18px;
+  font-family: "Roboto";
+  align-items: center;
+  border-bottom: 1px solid black;
+}
+
+.header-container h1 {
+  font-size: 20px;
+}
+
+.header-container button {
+  padding: 5px;
+  border-radius: 5px;
+  background-color: #fff;
+  cursor: pointer;
+  outline: none;
+  border: 1px solid #000;
+}

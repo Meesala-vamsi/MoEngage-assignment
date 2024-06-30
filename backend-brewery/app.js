@@ -8,11 +8,13 @@ const ErrorFeature = require('./Utils/globalErrorFeature')
 const errorController = require('./Controllers/globalErrorController');
 const globalErrorController = require('./Controllers/globalErrorController');
 const cors = require("cors")
+const cookieParser = require("cookie-parser")
 
 app.use(cors())
 app.use(express.json())
 app.use('/user', authRouter)
 app.use("/review", reviewRouter)
+app.use(cookieParser())
 app.all('*', function (req, res, next) {
 
   const err = new ErrorFeature(`Can't find ${req.originalUrl} on the server.`, 404)

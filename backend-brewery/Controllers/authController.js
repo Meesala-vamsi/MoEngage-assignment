@@ -35,17 +35,36 @@ exports.contentPermission = asyncErrorController(async (req, res, next) => {
 })
 
 
-exports.createUser = asyncErrorController(async (req, res) => {
-  const users = await User.create(req.body)
-  const token = getToken({ id: users._id })
+exports.createUser = asyncErrorController(async (req, res, next) => {
+
+  const user = await User.findOne({ email: req.body.email })
+  if (user) {
+    const error = new ErrorFeature("User Already Exists", 200)
+    next(error)
+  } else {
+    const users = await User.create(req.body)
+    const token = getToken({ id: users._id })
+
+
+    res.cookie('jwtToken', token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'Strict',
+      maxAge: 30 * 24 * 60 * 60 * 1000 // 30 days
+    });
+  }
+
   res.status(201).json({
     status: "success",
     token,
     data: {
       users
-    }
+    },
+    message: "User Created Successfully....."
   })
 })
+
+//POST METHOD
 
 exports.loginUser = asyncErrorController(async (req, res, next) => {
   const { email, password } = req.body
@@ -55,12 +74,42 @@ exports.loginUser = asyncErrorController(async (req, res, next) => {
     next(error)
   }
   const token = getToken({ id: user._id })
+
+
+  res.cookie('jwtToken', token, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'Strict',
+    maxAge: 30 * 24 * 60 * 60 * 1000
+  });
+
   res.status(200).json({
+    message: "User Logged In Successfully...",
     status: "success",
     token,
     data: {
       user
     }
+  })
+})
+
+
+//GET METHOD
+
+exports.getUser = asyncErrorController(async (req, res, next) => {
+  const user = await User.findById(req.user.id)
+
+  if (!user) {
+    const error = new ErrorFeature("User Not Found", 404)
+    next(error)
+  }
+
+  res.status(200).json({
+    status: "Success",
+    data: {
+      user
+    },
+    message: "Something Went Wrong...."
   })
 })
 
